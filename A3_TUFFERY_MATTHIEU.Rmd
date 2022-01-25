@@ -1,0 +1,74 @@
+---
+title: "Assignment 3 - Biol 432"
+author: "Matthieu Tuffery"
+date: ""
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Project info:
+
+Date : 25/01/2022
+
+Link to Github: https://github.com/MatthieuTu/A3_MatthieuTu
+
+
+```{r}
+library("tidyverse")
+```
+
+```{r}
+
+Data = read.csv(file = "InputData/FallopiaData.csv")
+
+Data = select(filter(Data, Total > 60), Total, Taxon, Scenario, Nutrients)
+
+Data = mutate(Data, TotalG = Total/1000)
+```
+
+```{r}
+multitaskfunction = function(vec, op) {
+  ifelse(op == "Sum",
+         return(sum(vec)),
+         ifelse(op == "Average",
+                return(mean(vec)),
+                ifelse(op == "Observation",
+                       return(length(vec)),
+                       print("error in the operation parameter: must be 'Sum', 'Average' or 'Observation'")
+                       )
+                )
+         )
+ 
+}
+```
+
+```{r}
+paste("there are",
+      multitaskfunction(Data$Taxon, "Observation"),
+      " observations in the taxon column")
+```
+```{r}
+for(i  in unique(Data$Nutrients)){
+  print(
+    paste( 
+    "The average mass for plants treated with",
+    i,
+    "concentration of nutrients is",
+    signif(multitaskfunction(Data$TotalG[Data$Nutrients == i], "Average"), 3),
+    "g"
+    )
+  )
+}
+
+```
+
+```{r}
+write.csv(Data, file = "Output/WrangledData.csv", row.names = F)
+```
+
+
+
+
