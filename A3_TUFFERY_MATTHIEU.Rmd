@@ -16,10 +16,17 @@ Date : 25/01/2022
 Link to Github: https://github.com/MatthieuTu/A3_MatthieuTu
 
 
+
+
+First, we load the tidyverse package to have usefull functions for later
 ```{r}
 library("tidyverse")
 ```
 
+
+We create a DataFrame "Data" from the file FallopiaData.csv located in the InputData folder
+Then we select only the usefull rows of Data for which the total is more than 60
+Eventually, we use mutate to create a new column TotalG. GTotal is Total divided by 1000 to have it in gram 
 ```{r}
 
 Data = read.csv(file = "InputData/FallopiaData.csv")
@@ -29,13 +36,22 @@ Data = select(filter(Data, Total > 60), Total, Taxon, Scenario, Nutrients)
 Data = mutate(Data, TotalG = Total/1000)
 ```
 
+
+
+The multitaskfunction function can make multiple tasks on the parameter vec:
+  - if the parameter task is "Sum" it will return the sum of the component of the vecto vec
+  - if the parameter task is "Average" it will return its mean
+  - if the parameter task is "observation" it will return its length
+If the parameter task is something else, an error message is printed
+  
 ```{r}
-multitaskfunction = function(vec, op) {
-  ifelse(op == "Sum",
+
+multitaskfunction = function(vec, task) {
+  ifelse(task == "Sum",
          return(sum(vec)),
-         ifelse(op == "Average",
+         ifelse(task == "Average",
                 return(mean(vec)),
-                ifelse(op == "Observation",
+                ifelse(task == "Observation",
                        return(length(vec)),
                        print("error in the operation parameter: must be 'Sum', 'Average' or 'Observation'")
                        )
@@ -45,11 +61,17 @@ multitaskfunction = function(vec, op) {
 }
 ```
 
+
+We can use the multitaskfunction to measure the number of observation of the taxon column
 ```{r}
 paste("there are",
       multitaskfunction(Data$Taxon, "Observation"),
       " observations in the taxon column")
 ```
+
+This chunk of code allows calculate and print the mean of the Total column for every nutrient category.
+The for loop would also work if there were other nutrient concentration categories (eg medium)
+
 ```{r}
 for(i  in unique(Data$Nutrients)){
   print(
@@ -64,11 +86,10 @@ for(i  in unique(Data$Nutrients)){
 }
 
 ```
-
+This line of code save the dataframe Data in the Output folde under the name of WrangledData.csv
 ```{r}
 write.csv(Data, file = "Output/WrangledData.csv", row.names = F)
 ```
-
 
 
 
