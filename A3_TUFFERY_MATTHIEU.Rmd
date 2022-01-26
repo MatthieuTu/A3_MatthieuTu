@@ -1,8 +1,10 @@
 ---
 title: "Assignment 3 - Biol 432"
 author: "Matthieu Tuffery"
-date: ""
-output: html_document
+date: ''
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -11,22 +13,22 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Project info:
 
-Date : 25/01/2022
+Date : 26/01/2022
 
 Link to Github: https://github.com/MatthieuTu/A3_MatthieuTu
 
 
 
 
-First, we load the tidyverse package to have usefull functions for later
-```{r}
-library("tidyverse")
+First, we load the dplyr package to have usefull functions for later.
+```{r, warning= FALSE, message=FALSE}
+library("dplyr")
 ```
 
 
-We create a DataFrame "Data" from the file FallopiaData.csv located in the InputData folder
-Then we select only the usefull rows of Data for which the total is more than 60
-Eventually, we use mutate to create a new column TotalG. GTotal is Total divided by 1000 to have it in gram 
+We create a DataFrame "Data" from the file FallopiaData.csv located in the InputData folder.
+Then we select only the usefull rows of Data for which the total is more than 60.
+Eventually, we use mutate to create a new column TotalG. GTotal is Total divided by 1000 to have it in grams. 
 ```{r}
 
 Data = read.csv(file = "InputData/FallopiaData.csv")
@@ -42,7 +44,7 @@ The multitaskfunction function can make multiple tasks on the parameter vec:
   - if the parameter task is "Sum" it will return the sum of the component of the vecto vec
   - if the parameter task is "Average" it will return its mean
   - if the parameter task is "observation" it will return its length
-If the parameter task is something else, an error message is printed
+If the parameter task is something else, an error message is printed.
   
 ```{r}
 
@@ -62,15 +64,16 @@ multitaskfunction = function(vec, task) {
 ```
 
 
-We can use the multitaskfunction to measure the number of observation of the taxon column
+We can use the multitaskfunction to measure the number of observation of the taxon column.
 ```{r}
 paste("there are",
       multitaskfunction(Data$Taxon, "Observation"),
-      " observations in the taxon column")
+      " observations in the taxon column.")
 ```
 
-This chunk of code allows calculate and print the mean of the Total column for every nutrient category.
+This chunk of code uses the multitaskfunction to calculate and print the mean of the Total column for every nutrient category.
 The for loop would also work if there were other nutrient concentration categories (eg medium)
+The mean is round off to 3 significant digits. 
 
 ```{r}
 for(i  in unique(Data$Nutrients)){
@@ -80,13 +83,13 @@ for(i  in unique(Data$Nutrients)){
     i,
     "concentration of nutrients is",
     signif(multitaskfunction(Data$TotalG[Data$Nutrients == i], "Average"), 3),
-    "g"
+    "g."
     )
   )
 }
 
 ```
-This line of code save the dataframe Data in the Output folde under the name of WrangledData.csv
+This line of code save the dataframe Data in the Output folde under the name of WrangledData.csv.
 ```{r}
 write.csv(Data, file = "Output/WrangledData.csv", row.names = F)
 ```
